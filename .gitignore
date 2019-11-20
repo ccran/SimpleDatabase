@@ -2,6 +2,7 @@
 ### IDEA
 .idea/
 *.iml
+target/
 
 ### Java template
 # Compiled class file
