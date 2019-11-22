@@ -1,5 +1,6 @@
 package com.ccran.db;
 
+import com.ccran.db.entity.Row;
 import com.ccran.db.entity.Statement;
 import com.ccran.db.status.MetaCommandResult;
 import com.ccran.db.status.PrepareResult;
@@ -36,6 +37,9 @@ public class Main {
             // 预装配命令
             Statement statement = new Statement();
             switch (prepareStatement(input, statement)) {
+                case PREPARE_SYNTAX_ERROR:
+                    System.out.println("Syntax error. Could not parse statement.");
+                    continue;
                 case PREPARE_SUCCESS:
                     break;
                 case PREPARE_UNRECOGNIZED_STATEMENT:
@@ -81,8 +85,26 @@ public class Main {
      * @update 2019/11/20 20:20
      */
     public static PrepareResult prepareStatement(String input, Statement statement) {
+        // 插入语句
         if (input.startsWith("insert")) {
             statement.setType(Statement.StatementType.STATEMENT_INSERT);
+            // 获取插入行
+            Row row = new Row();
+            // 严格根据空格分隔
+            String[] sepInput = input.split(" ");
+            if (sepInput.length != 4) {
+                return PrepareResult.PREPARE_SYNTAX_ERROR;
+            }
+            // id转换
+            try {
+                row.setId(Integer.parseInt(sepInput[1]));
+            } catch (NumberFormatException e) {
+                return PrepareResult.PREPARE_SYNTAX_ERROR;
+            }
+            row.setUserName(sepInput[2]);
+            row.setEmail(sepInput[3]);
+            // 设置给statement
+            statement.setRowToInsert(row);
             return PrepareResult.PREPARE_SUCCESS;
         } else if (input.startsWith("select")) {
             statement.setType(Statement.StatementType.STATEMENT_SELECT);

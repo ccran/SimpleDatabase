@@ -6,7 +6,8 @@ package com.ccran.db.entity;
  * @create 2019-11-20 20:12
  **/
 public class Statement {
-    StatementType type;
+    private StatementType type;//语句类型
+    private Row rowToInsert;//插入行
 
     public StatementType getType() {
         return type;
@@ -14,6 +15,14 @@ public class Statement {
 
     public void setType(StatementType type) {
         this.type = type;
+    }
+
+    public Row getRowToInsert() {
+        return rowToInsert;
+    }
+
+    public void setRowToInsert(Row rowToInsert) {
+        this.rowToInsert = rowToInsert;
     }
 
     public enum StatementType {
