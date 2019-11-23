@@ -9,6 +9,14 @@ public class Statement {
     private StatementType type;//语句类型
     private Row rowToInsert;//插入行
 
+    public Statement() {
+    }
+
+    public Statement(StatementType type, Row rowToInsert) {
+        this.type = type;
+        this.rowToInsert = rowToInsert;
+    }
+
     public StatementType getType() {
         return type;
     }
@@ -27,5 +35,13 @@ public class Statement {
 
     public enum StatementType {
         STATEMENT_INSERT, STATEMENT_SELECT
+    }
+
+    @Override
+    public String toString() {
+        return "Statement{" +
+                "type=" + type +
+                ", rowToInsert=" + rowToInsert +
+                '}';
     }
 }

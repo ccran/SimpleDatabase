@@ -1,4 +1,4 @@
-package com.ccran.db.status;
+package com.ccran.db.result;
 
 /**
  * @author ccran

@@ -2,8 +2,10 @@ package com.ccran.db;
 
 import com.ccran.db.entity.Row;
 import com.ccran.db.entity.Statement;
-import com.ccran.db.status.MetaCommandResult;
-import com.ccran.db.status.PrepareResult;
+import com.ccran.db.entity.Table;
+import com.ccran.db.result.ExecuteResult;
+import com.ccran.db.result.MetaCommandResult;
+import com.ccran.db.result.PrepareResult;
 
 import java.util.Scanner;
 
@@ -16,6 +18,8 @@ public class Main {
     public static void main(String[] args) {
         // 输入流
         Scanner scanner = new Scanner(System.in);
+        // 创建Table
+        Table table = new Table();
         // 循环处理
         while (true) {
             // 命令行提示输出
@@ -41,15 +45,23 @@ public class Main {
                     System.out.println("Syntax error. Could not parse statement.");
                     continue;
                 case PREPARE_SUCCESS:
+                    System.out.println("PrepareStatement success." + statement);
                     break;
                 case PREPARE_UNRECOGNIZED_STATEMENT:
                     System.out.println(String.format("Unrecognized keyword at start of '%s'", input));
                     continue;
             }
-
+            // insert 1 cstack foo@bar.com
+            // insert 2 bob bob@example.com
             // 执行命令
-            executeStatement(statement);
-            System.out.println("Executed.");
+            switch (executeStatement(table, statement)) {
+                case EXECUTE_SUCCESS:
+                    System.out.println("Executed.");
+                    break;
+                case EXECUTE_TABLE_FULL:
+                    System.out.println("Error: Table full.");
+                    break;
+            }
         }
     }
 
@@ -67,15 +79,14 @@ public class Main {
      * @author ccran
      * @update 2019/11/20 20:26
      */
-    public static void executeStatement(Statement statement) {
+    public static ExecuteResult executeStatement(Table table, Statement statement) {
         switch (statement.getType()) {
             case STATEMENT_INSERT:
-                System.out.println("This is where we would do an insert.");
-                break;
+                return table.executeInsert(statement);
             case STATEMENT_SELECT:
-                System.out.println("This is where we would do an select.");
-                break;
+                return table.executeSelect();
         }
+        return ExecuteResult.EXECUTE_SUCCESS;
     }
 
     /**
