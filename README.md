@@ -139,4 +139,4 @@ public class Table {
 
 结果演示：
 
-![结果](./pic/chap3.png)
+![结果](https://github.com/ccran/SimpleDatabase/blob/master/pic/part3.png)
