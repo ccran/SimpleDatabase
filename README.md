@@ -1,5 +1,6 @@
 # Java版本简单数据库
 原文C语言版：[Let’s Build a Simple Database](https://cstack.github.io/db_tutorial/)
+github代码：[Java版本简单数据库](https://github.com/ccran/SimpleDatabase)
 
 ## 1. 建立交互式Shell
 第一讲主要是如何建立一个交互式的Shell（类似于Windows命令行窗口）
