@@ -41,6 +41,12 @@ public class Main {
             // 预装配命令
             Statement statement = new Statement();
             switch (prepareStatement(input, statement)) {
+                case PREPARE_STRING_TOO_LONG:
+                    System.out.println("String is too long.");
+                    continue;
+                case PREPARE_NEGATIVE_ID:
+                    System.out.println("ID must be positive.");
+                    continue;
                 case PREPARE_SYNTAX_ERROR:
                     System.out.println("Syntax error. Could not parse statement.");
                     continue;
@@ -51,7 +57,7 @@ public class Main {
                     System.out.println(String.format("Unrecognized keyword at start of '%s'", input));
                     continue;
             }
-            // insert 1 cstack foo@bar.com
+            // insert -1 ffffffffffffffffffffffffffffffgga foo@bar.com
             // insert 2 bob bob@example.com
             // 执行命令
             switch (executeStatement(table, statement)) {
@@ -111,6 +117,14 @@ public class Main {
                 row.setId(Integer.parseInt(sepInput[1]));
             } catch (NumberFormatException e) {
                 return PrepareResult.PREPARE_SYNTAX_ERROR;
+            }
+            // 判别ID是否为负数
+            if(row.getId()<0){
+                return PrepareResult.PREPARE_NEGATIVE_ID;
+            }
+            // 判别长度是否大于限定长度
+            if (sepInput[2].length() > Row.USERNAME_SIZE || sepInput[3].length() > Row.EMAIL_SIZE) {
+                return PrepareResult.PREPARE_STRING_TOO_LONG;
             }
             row.setUserName(sepInput[2]);
             row.setEmail(sepInput[3]);

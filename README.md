@@ -153,3 +153,56 @@ public class Table {
 结果演示：
 
 ![结果](https://github.com/ccran/SimpleDatabase/blob/master/pic/part3.png)
+
+## 4. 代码测试
+
+这部分主要是对之前写好代码的测试。
+
+作者主要做了以下几件事：
+
+1. 通过RSpec测试代码，类似于JUnit
+2. 测试用户名、邮箱发现有bug；用户名通过**char username[32]**存储，因为c语言的字符串必须以'\0'结尾，所以只能存31个字符；邮箱类似
+3. 修复以上bug，判别输入的用户名、邮箱的字符串长度是否大于限定长度
+4. 修复ID为负数的bug；
+
+> 贴出prepareStatement代码
+
+```java
+public static PrepareResult prepareStatement(String input, Statement statement) {
+        // 插入语句
+        if (input.startsWith("insert")) {
+            statement.setType(Statement.StatementType.STATEMENT_INSERT);
+            // 获取插入行
+            Row row = new Row();
+            // 严格根据空格分隔
+            String[] sepInput = input.split(" ");
+            if (sepInput.length != 4) {
+                return PrepareResult.PREPARE_SYNTAX_ERROR;
+            }
+            // id转换
+            try {
+                row.setId(Integer.parseInt(sepInput[1]));
+            } catch (NumberFormatException e) {
+                return PrepareResult.PREPARE_SYNTAX_ERROR;
+            }
+            // 判别ID是否为负数
+            if(row.getId()<0){
+                return PrepareResult.PREPARE_NEGATIVE_ID;
+            }
+            // 判别长度是否大于限定长度
+            if (sepInput[2].length() > Row.USERNAME_SIZE || sepInput[3].length() > Row.EMAIL_SIZE) {
+                return PrepareResult.PREPARE_STRING_TOO_LONG;
+            }
+            row.setUserName(sepInput[2]);
+            row.setEmail(sepInput[3]);
+            // 设置给statement
+            statement.setRowToInsert(row);
+            return PrepareResult.PREPARE_SUCCESS;
+        } else if (input.startsWith("select")) {
+            statement.setType(Statement.StatementType.STATEMENT_SELECT);
+            return PrepareResult.PREPARE_SUCCESS;
+        }
+        return PrepareResult.PREPARE_UNRECOGNIZED_STATEMENT;
+    }
+```
+
